@@ -105,3 +105,6 @@ venv.bak/
 
 # everything in /data
 data/*
+
+# config file
+config.ini
