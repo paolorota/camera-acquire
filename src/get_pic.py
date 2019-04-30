@@ -27,6 +27,7 @@ args = parser.parse_args()
 
 # initialize the camera and grab a reference to the raw camera capture
 camera = PiCamera()
+camera.resolution = (640, 480)
 rawCapture = PiRGBArray(camera)
  
 # allow the camera to warmup
@@ -35,6 +36,8 @@ time.sleep(0.1)
 # grab an image from the camera
 camera.capture(rawCapture, format="bgr")
 image = rawCapture.array
+
+# image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
  
 # display the image on screen and wait for a keypress
 # fileout = os.path.join(savedir, '{0}.png'.format(image_name))
