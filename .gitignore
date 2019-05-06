@@ -108,3 +108,5 @@ data/*
 
 # config file
 config.ini
+
+.vscode/
