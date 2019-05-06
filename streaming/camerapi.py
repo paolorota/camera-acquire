@@ -35,7 +35,7 @@ class VideoCamera(object):
             camera.resolution = (640, 480)
 
             # let camera warm up
-            camera.start_preview()
+            # camera.start_preview()
             time.sleep(2)
 
             stream = io.BytesIO()
