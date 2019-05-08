@@ -110,3 +110,7 @@ data/*
 config.ini
 
 .vscode/
+
+# fat stuff
+streaming/reid/face_db/*
+streaming/reid/model/*
