@@ -2,6 +2,8 @@ import socketio
 from aiohttp import web
 import cv2
 import numpy as np
+import json
+import base64
 
 sio = socketio.AsyncServer(async_mode='aiohttp')
 app = web.Application()
@@ -27,7 +29,14 @@ async def event(sid, data):
 async def get_image(sid, data):
     # img = np.fromstring(data, dtype=np.uint8)
     # print('got image: {} \ndata shape: {}'.format(img, img.shape))
-    print(data)
+    j = json.loads(data)
+    b = bytes(j['image'], 'utf-8')
+    r = base64.decodebytes(b)
+    q = np.frombuffer(r, dtype=np.uint8)
+    d = cv2.imdecode(q, cv2.IMREAD_COLOR)
+    cv2.imshow('image', d)
+    cv2.waitKey(1)
+    # print(data)
 
 
 web.run_app(app)

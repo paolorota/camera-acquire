@@ -3,6 +3,10 @@ import socketio
 import sys
 import json
 from random import randint
+import cv2
+import numpy as np
+import base64
+
 
 sio = socketio.Client()
 sio.connect('http://0.0.0.0:8080')
@@ -10,32 +14,46 @@ sio.connect('http://0.0.0.0:8080')
 
 @sio.on('connect')
 def on_connect():
-    print('I\'m connected!')
+	print('I\'m connected!')
 
 
 @sio.on('message')
 def on_message(data):
-    print('I received a message!')
+	print('I received a message!')
 
 
 @sio.on('my message')
 def on_message(data):
-    print('I received a custom message!')
+	print('I received a custom message!')
 
 
 @sio.on('disconnect')
 def on_disconnect():
-    print('I\'m disconnected!')
+	print('I\'m disconnected!')
+
+
+
+cap = cv2.VideoCapture(0)
+fn = 1
 
 
 while True:
-    sensordata = {
-        "lm-temperature-01": {"sid": "lm-temperature-01", "value": str(randint(20, 21)), "setpoint": "30"},
-        "lm-current-01": {"sid": "lm-current-01", "value": str(randint(30, 50)), "setpoint": "40"},
-        "shg-temperature-01": {"sid": "lm-current-01", "value": str(randint(14, 15)), "setpoint": "15"},
-        "shg-current-01": {"sid": "lm-current-01", "value": str(randint(10, 11)), "setpoint": "10"},
-        "shg-power-01": {"sid": "lm-current-01", "value": str(randint(21, 31)), "setpoint": "30"},
-    }
-    sio.emit('event', json.dumps(sensordata))
-    # sio.emit('image', data='ciao')
-    time.sleep(1)
+	_, frame = cap.read()
+	ret, jpeg = cv2.imencode('.jpg', frame)
+	enc = base64.b64encode(jpeg)
+	enc_str = enc.decode('utf-8')
+	## Decoding
+	b = bytes(enc_str, 'utf-8')
+	r = base64.decodebytes(b)
+	q = np.frombuffer(r, dtype=np.uint8)
+	d = cv2.imdecode(q, cv2.IMREAD_COLOR)
+
+	imagedata = {
+		'image': enc_str,
+		'success': ret,
+		'fn': fn
+	}
+
+	sio.emit('image', json.dumps(imagedata))
+	time.sleep(0.03)
+	fn += 1
