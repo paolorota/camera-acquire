@@ -10,19 +10,24 @@ sio.attach(app)
 
 @sio.on('connect')
 async def connect(sid, environ):
-	print('I\'m connected!', sid)
+    print('I\'m connected!', sid)
+
 
 @sio.on('disconnect')
 async def disconnect(sid):
     print('disconnect ', sid)
 
+
 @sio.on('event')
 async def event(sid, data):
-	print('mex ->', data)
+    print('mex ->', data)
+
 
 @sio.on('image')
 async def get_image(sid, data):
-    img = np.fromstring(data, dtype=np.uint8)
-    print('got image: {} \ndata shape: {}'.format(img, img.shape))
+    # img = np.fromstring(data, dtype=np.uint8)
+    # print('got image: {} \ndata shape: {}'.format(img, img.shape))
+    print(data)
+
 
 web.run_app(app)
