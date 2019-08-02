@@ -34,8 +34,11 @@ async def get_image(sid, data):
     r = base64.decodebytes(b)
     q = np.frombuffer(r, dtype=np.uint8)
     d = cv2.imdecode(q, cv2.IMREAD_COLOR)
-    cv2.imshow('image', d)
+    cv2.imshow('server', d)
     cv2.waitKey(1)
+    print('Frame number: {0:04}'.format(j['fn']))
+    await sio.emit('reply', data='received frame: {}'.format(j['fn']))
+
     # print(data)
 
 

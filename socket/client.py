@@ -7,7 +7,6 @@ import cv2
 import numpy as np
 import base64
 
-
 sio = socketio.Client()
 sio.connect('http://0.0.0.0:8080')
 
@@ -22,9 +21,9 @@ def on_message(data):
 	print('I received a message!')
 
 
-@sio.on('my message')
+@sio.on('reply')
 def on_message(data):
-	print('I received a custom message!')
+	print('[REPLY] {}'.format(data))
 
 
 @sio.on('disconnect')
@@ -42,11 +41,11 @@ while True:
 	ret, jpeg = cv2.imencode('.jpg', frame)
 	enc = base64.b64encode(jpeg)
 	enc_str = enc.decode('utf-8')
-	## Decoding
-	b = bytes(enc_str, 'utf-8')
-	r = base64.decodebytes(b)
-	q = np.frombuffer(r, dtype=np.uint8)
-	d = cv2.imdecode(q, cv2.IMREAD_COLOR)
+	# ## Decoding
+	# b = bytes(enc_str, 'utf-8')
+	# r = base64.decodebytes(b)
+	# q = np.frombuffer(r, dtype=np.uint8)
+	# d = cv2.imdecode(q, cv2.IMREAD_COLOR)
 
 	imagedata = {
 		'image': enc_str,
@@ -55,5 +54,7 @@ while True:
 	}
 
 	sio.emit('image', json.dumps(imagedata))
-	time.sleep(0.03)
+	# time.sleep(0.03)
 	fn += 1
+	cv2.imshow('client', frame)
+	cv2.waitKey(1)
